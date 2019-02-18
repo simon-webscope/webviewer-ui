@@ -8,7 +8,8 @@ webviewer-ui.zip
 notes
 coverage
 build
-tests
 jest.config.js
 package-lock.json
 .eslintignore
+test/cypress/screenshotsFolder
+test/cypress/videos

@@ -9,6 +9,9 @@ export default dispatch => () => {
   setTimeout(() => {
     dispatch(actions.closeElement('progressModal'));
     dispatch(actions.resetLoadingProgress());
+    if (window.Cypress) {
+      window.documentLoaded = true;
+    }
   }, 300);
 
   if (window.innerWidth <= 640) {
