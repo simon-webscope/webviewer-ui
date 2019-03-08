@@ -124,4 +124,4 @@ export const setPageLabels = pageLabels => dispatch => {
 };
 export const setSwipeOrientation = swipeOrientation => ({ type: 'SET_SWIPE_ORIENTATION', payload: { swipeOrientation } });
 export const setCustomNoteFilter = filterFunc => ({ type: 'SET_CUSTOM_NOTE_FILTER', payload: { customNoteFilter: filterFunc } });
-  
+export const setThumbnailRenderer = renderFunc =>  ({ type: 'SET_THUMBNAIL_RENDERER', payload: { thumbnailRenderer: renderFunc } });

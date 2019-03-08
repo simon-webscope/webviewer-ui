@@ -140,6 +140,8 @@ export default initialState => (state = initialState, action) => {
       return { ...state, swipeOrientation: payload.swipeOrientation };
     case 'SET_CUSTOM_NOTE_FILTER':
       return { ...state, customNoteFilter: payload.customNoteFilter };
+    case 'SET_THUMBNAIL_RENDERER':
+      return { ...state, customThumbnailRenderer: payload.thumbnailRenderer };
     default:
       return state;
   }
