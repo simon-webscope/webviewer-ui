@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import ToolButton from 'components/ToolButton';
+import ActionButton from 'components/ActionButton';
 import Button from 'components/Button';
 
 import core from 'core';
@@ -78,18 +79,20 @@ class ToolsOverlay extends React.PureComponent {
 
   render() {
     const { left, right } = this.state;
-    const { isDisabled, isOpen, toolButtonObjects, activeToolGroup } = this.props;
+    const { isDisabled, isOpen, toolButtonObjects, actionButtonObjects, activeToolGroup } = this.props;
 
     if (isDisabled || !activeToolGroup) {
       return null;
     }
 
-    const toolNames = Object.keys(toolButtonObjects).filter(toolName => toolButtonObjects[toolName].group === activeToolGroup);
+    let toolNames = Object.keys(toolButtonObjects).filter(toolName => toolButtonObjects[toolName].group === activeToolGroup);
+    let actionNames = Object.keys(actionButtonObjects).filter(actionName => actionButtonObjects[actionName].group === activeToolGroup);
+    const buttonNames = toolNames.concat(actionNames);
     const className = getClassName('Overlay ToolsOverlay', { isOpen });
 
     return (
       <div className={className} ref={this.overlay} style={{ left, right }} data-element="toolsOverlay" onMouseDown={e => e.stopPropagation()}>
-        {toolNames.map((toolName, i) => <ToolButton key={`${toolName}-${i}`} toolName={toolName} />)}
+        {buttonNames.map((buttonName, i) => buttonName.includes("Annotation") ? <ToolButton key={`${buttonName}-${i}`} toolName={buttonName} /> : <ActionButton key={i} { ...actionButtonObjects[buttonName] } />) }
         <div className="spacer hide-in-desktop"></div>
         <Button className="close hide-in-desktop" dataElement="toolsOverlayCloseButton" img="ic_check_black_24px" onClick={this.handleCloseClick} />
       </div>
@@ -101,13 +104,14 @@ const mapStateToProps = state => ({
   isDisabled: selectors.isElementDisabled(state, 'toolsOverlay'),
   isOpen: selectors.isElementOpen(state, 'toolsOverlay'),
   toolButtonObjects: selectors.getToolButtonObjects(state),
+  actionButtonObjects: selectors.getActionButtonObjects(state),
   activeHeaderItems: selectors.getActiveHeaderItems(state),
-  activeToolGroup: selectors.getActiveToolGroup(state)
+  activeToolGroup: selectors.getActiveToolGroup(state),
 });
 
 const mapDispatchToProps = {
   closeElements: actions.closeElements,
-  setActiveToolGroup: actions.setActiveToolGroup
+  setActiveToolGroup: actions.setActiveToolGroup,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ToolsOverlay);

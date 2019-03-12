@@ -118,7 +118,7 @@ const Header = {
   },
   push(...newItem) {
     this.headers[this.headerGroup].push(...newItem);
-    
+    console.log('new button added');
     return this;
   },
   pop() {
