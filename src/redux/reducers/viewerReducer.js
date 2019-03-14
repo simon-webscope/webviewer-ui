@@ -152,6 +152,8 @@ export default initialState => (state = initialState, action) => {
       return { ...state, warning: payload};
     case 'SET_CUSTOM_NOTE_FILTER':
       return { ...state, customNoteFilter: payload.customNoteFilter };
+    case 'ADD_ACTION_BUTTON_OBJECT':
+      return { ...state, actionButtonObjects: { ...state.actionButtonObjects, [['Action', payload.actionButtonObject.dataElement].join('') ] : payload.actionButtonObject } }
     default:
       return state;
   }

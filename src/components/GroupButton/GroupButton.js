@@ -86,15 +86,16 @@ class GroupButton extends React.PureComponent {
   }
 
   render() {
-    const { mediaQueryClassName, isDisabled, dataElement, toolButtonObjects, isActive, toolNames, iconColor } = this.props;
+    const { mediaQueryClassName, isDisabled, dataElement, toolButtonObjects, actionButtonObjects, isActive, toolNames, iconColor, toolGroup } = this.props;
     const allButtonsInGroupDisabled = toolNames.every(toolName => core.getTool(toolName).disabled);
+    const actionButtonExists = !Object.keys(actionButtonObjects).every(key => actionButtonObjects[key].group !== toolGroup);
 
-    if (isDisabled || allButtonsInGroupDisabled) {
+    if ((isDisabled || allButtonsInGroupDisabled) && !actionButtonExists) {
       return null;
     }
 
     const { toolName } = this.state;
-    const img = this.props.img ? this.props.img : toolButtonObjects[toolName].img;
+    const img = this.props.img ? this.props.img : toolButtonObjects[toolName] ? toolButtonObjects[toolName].img : '<svg></svg>'
     const color = isActive && !this.props.img && iconColor ? getToolStyles(toolName)[iconColor].toHexString() : '';
     // If it's a misc tool group button or customized tool group button we don't want to have the down arrow
     const showDownArrow = this.props.img === undefined;
@@ -113,6 +114,7 @@ const mapStateToProps = (state, ownProps) => ({
   activeToolName: selectors.getActiveToolName(state),
   toolNames: selectors.getToolNamesByGroup(state, ownProps.toolGroup),
   toolButtonObjects: selectors.getToolButtonObjects(state),
+  actionButtonObjects: selectors.getActionButtonObjects(state),
   iconColor: selectors.getIconColor(state, mapToolNameToKey(selectors.getActiveToolName(state)))
 });
 

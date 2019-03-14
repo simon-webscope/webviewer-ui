@@ -3,7 +3,7 @@ import actions from 'actions';
 export default store => callback => {
   const state = store.getState();
   const headerGroups = Object.keys(state.viewer.headers);
-  let header = Object.create(Header).initialize(state.viewer, headerGroups);
+  let header = Object.create(Header).initialize(state.viewer, store.dispatch);
 
   callback(header);
   headerGroups.forEach(headerGroup => {
@@ -12,12 +12,12 @@ export default store => callback => {
 };
 
 const Header = {
-  initialize(viewerState) {
+  initialize(viewerState, dispatch) {
     this.headers = viewerState.headers;
     this.toolButtonObjects = viewerState.toolButtonObjects;
     this.headerGroup = 'default'; 
     this.index = -1;
-
+    this.dispatch = dispatch;
     return this;
   },
   get(dataElement) {
@@ -117,8 +117,33 @@ const Header = {
     return this;
   },
   push(...newItem) {
-    this.headers[this.headerGroup].push(...newItem);
-    console.log('new button added');
+    let existingItem = null;
+    Object.keys(this.headers[this.headerGroup]).forEach((item) => {
+      if (this.headers[this.headerGroup][item]['dataElement'] === newItem[0]['dataElement']){
+        existingItem = this.headers[this.headerGroup][item];
+      }
+    })
+    // if header item already exists, override its properties
+    if (existingItem) {
+      existingItem = [{ ...existingItem, ...newItem[0] }];
+    } else {
+      existingItem = newItem;
+    }
+    
+    if (newItem[0].group !== undefined){
+      this.dispatch(actions.addActionButtonObject(...existingItem));
+    } else {
+      if (existingItem){
+        if (newItem[0].type === 'GroupButton') {
+          this.delete(existingItem[0]['dataElement']);
+          this.headers[this.headerGroup].push(...existingItem);
+        }
+        this.get(existingItem[0]['dataElement']).insertAfter(...existingItem);
+        this.delete(existingItem[0]['dataElement']);
+      } else {
+        this.headers[this.headerGroup].push(...existingItem);
+      }
+    }
     return this;
   },
   pop() {

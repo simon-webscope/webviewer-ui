@@ -1,5 +1,4 @@
 import setHeaderItems from '../apis/setHeaderItems';
-import { updateTool } from '../redux/actions/exposedActions';
 
 export default store => (toolName, properties) => {
   if (properties.buttonGroup === null){

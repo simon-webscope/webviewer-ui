@@ -29,6 +29,7 @@ class HeaderItems extends React.PureComponent {
             case 'toolButton':
               return <ToolButton key={key} mediaQueryClassName={mediaQueryClassName} {...item} />;
             case 'toolGroupButton':
+            case 'GroupButton':
               return <GroupButton key={key} mediaQueryClassName={mediaQueryClassName} {...item} />;
               // return <ToolGroupButton key={key} mediaQueryClassName={mediaQueryClassName} {...item} />;
             case 'toggleElementButton':
