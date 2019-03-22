@@ -25,7 +25,6 @@ class Thumbnail extends React.PureComponent {
   constructor(props) {
     super(props);
     this.wrapper = React.createRef();
-    this.thumbContainer = React.createRef();
   }
 
   componentDidMount() {
@@ -34,21 +33,18 @@ class Thumbnail extends React.PureComponent {
       index,
       customThumbnailRenderer,
     } = this.props;
-    let thumbnailContainer;
 
     if (customThumbnailRenderer && typeof customThumbnailRenderer === 'function') {
-      thumbnailContainer = this.createThumbnailContainer();
+      this.thumbnailContainer = this.createThumbnailContainer();
 
       const element = customThumbnailRenderer({
         pageNumber: index + 1,
-        thumbnailContainer
+        thumbnailContainer: this.thumbnailContainer
       });
       this.wrapper.current.appendChild(element);
-    } else {
-      thumbnailContainer = this.thumbContainer.current;
     }
 
-    onLoad(index, thumbnailContainer);
+    onLoad(index, this.thumbnailContainer);
   }
 
   componentDidUpdate(prevProps) {
@@ -61,7 +57,7 @@ class Thumbnail extends React.PureComponent {
     } = this.props;
 
     if (!prevProps.canLoad && this.props.canLoad) {
-      onLoad(index, this.thumbContainer.current);
+      onLoad(index, this.thumbnailContainer);
     } 
 
     if (prevProps.canLoad && !this.props.canLoad) {
@@ -74,14 +70,14 @@ class Thumbnail extends React.PureComponent {
     ) {
       this.emptyNode(this.wrapper.current);
 
-      const thumbnailContainer = this.createThumbnailContainer();
+      this.thumbnailContainer = this.createThumbnailContainer();
       const element = customThumbnailRenderer({
         pageNumber: index + 1,
-        thumbnailContainer
+        thumbnailContainer: this.thumbnailContainer
       });
       this.wrapper.current.appendChild(element);
       onRemove(index);
-      onLoad(index, thumbnailContainer);
+      onLoad(index, this.thumbnailContainer);
     }
   }
 
@@ -134,7 +130,12 @@ class Thumbnail extends React.PureComponent {
           ? null
           : (
             <React.Fragment>
-              <div className="container" ref={this.thumbContainer} onClick={this.handleClick}></div>
+              <div 
+                className="container" 
+                ref={ref => this.thumbnailContainer = ref} 
+                onClick={this.handleClick}
+              >
+              </div>
               <div className="page-label">{pageLabel}</div>
             </React.Fragment>
           )
